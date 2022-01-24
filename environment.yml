@@ -1,4 +1,4 @@
-name: setvae
+name: pcgan
 channels:
   - conda-forge
   - pytorch
