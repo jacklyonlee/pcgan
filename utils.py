@@ -1,13 +1,15 @@
+import torch
 import plotly as plt
 
 
-def plot_samples(samples, num=4, rows=2, cols=2):
+def plot_samples(samples, num=8, rows=2, cols=4):
     fig = plt.subplots.make_subplots(
         rows=rows,
         cols=cols,
         specs=[[{"type": "Scatter3d"} for _ in range(cols)] for _ in range(rows)],
     )
-    for i, sample in enumerate(samples[:num].cpu()):
+    indices = torch.randperm(samples.size(0))[:num]
+    for i, sample in enumerate(samples[indices].cpu()):
         fig.add_trace(
             plt.graph_objects.Scatter3d(
                 x=sample[:, 0],
