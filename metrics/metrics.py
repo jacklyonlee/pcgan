@@ -40,32 +40,12 @@ def compute_mmd_cov(dxy):
     return mmd, cov
 
 
-def compute_knn(dyy, dyx, dxx, k):
-    X, Y = torch.ones(dxx.size(0)), torch.zeros(dyy.size(0))
-    XY = torch.ones(dxx.size(0) + dyy.size(0)).to(dxx)
-    lb = torch.cat((Y, X)).to(dxx)
-    my = torch.cat((dyy, dyx), dim=1)
-    mx = torch.cat((dyx.t(), dxx), dim=1)
-    m = torch.cat((my, mx), dim=0)
-    m = m + torch.diag(XY * float("inf"))
-    _, idx = m.topk(k, dim=0, largest=False)
-    count = sum(lb.index_select(0, idx[i]) for i in range(k))
-    acc = (lb == (count >= (XY * (k / 2)))).float().mean()
-    return acc
-
-
 @torch.no_grad()
 def compute_metrics(x, y, batch_size):
     cd_yx, emd_yx = compute_pairwise_cd_emd(y, x, batch_size)
     mmd_cd, cov_cd = compute_mmd_cov(cd_yx.t())
     mmd_emd, cov_emd = compute_mmd_cov(emd_yx.t())
-    cd_yy, emd_yy = compute_pairwise_cd_emd(y, y, batch_size)
-    cd_xx, emd_xx = compute_pairwise_cd_emd(x, x, batch_size)
-    acc_cd = compute_knn(cd_yy, cd_yx, cd_xx, k=1)
-    acc_emd = compute_knn(emd_yy, emd_yx, emd_xx, k=1)
     return {
-        "1-NNA-CD": acc_cd.cpu(),
-        "1-NNA-EMD": acc_emd.cpu(),
         "COV-CD": cov_cd.cpu(),
         "COV-EMD": cov_emd.cpu(),
         "MMD-CD": mmd_cd.cpu(),

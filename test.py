@@ -6,7 +6,7 @@ import torch
 import numpy as np
 
 from dataset import ShapeNet15k
-from model.networks import SetVAE
+from model import Generator
 from trainer import Trainer
 
 
@@ -84,24 +84,11 @@ def main(args):
     )
 
     # Setup model
-    net = SetVAE(
-        input_dim=3,
-        max_outputs=2500,
-        init_dim=32,
-        n_mixtures=4,
-        n_layers=7,
-        z_dim=16,
-        z_scales=[1, 1, 2, 4, 8, 16, 32],
-        hidden_dim=64,
-        num_heads=4,
-        slot_att=True,
-        isab_inds=16,
-        ln=True,
-    )
+    net_g = Generator()
 
     # Setup trainer
     trainer = Trainer(
-        net,
+        net_g=net_g,
         batch_size=args.batch_size,
         device=args.device,
     )

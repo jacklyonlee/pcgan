@@ -7,7 +7,7 @@ import torch
 import numpy as np
 
 from dataset import ShapeNet15k
-from model.networks import SetVAE
+from model import Generator, Discriminator
 from trainer import Trainer
 
 
@@ -64,7 +64,7 @@ def parse_args():
     parser.add_argument(
         "--tr_sample_size",
         type=int,
-        default=2048,
+        default=1024,
         help="Number of points sampled from each training sample.",
     )
     parser.add_argument(
@@ -77,10 +77,10 @@ def parse_args():
         "--max_epoch", type=int, default=8000, help="Total training epoch."
     )
     parser.add_argument(
-        "--kl_warmup_epoch",
+        "--repeat_d",
         type=int,
-        default=2000,
-        help="Number of epochs to warmup KL loss.",
+        default=5,
+        help="Number of discriminator updates before a generator update.",
     )
     parser.add_argument(
         "--log_every_n_step",
@@ -91,7 +91,7 @@ def parse_args():
     parser.add_argument(
         "--val_every_n_epoch",
         type=int,
-        default=50,
+        default=20,
         help="Validate model at every N epoch.",
     )
     parser.add_argument(
@@ -130,7 +130,7 @@ def main(args):
         os.mkdir(ckpt_subdir)
 
     # Setup logging
-    wandb.init(project="setvae")
+    wandb.init(project="pcgan")
 
     # Setup dataloaders
     train_loader = torch.utils.data.DataLoader(
@@ -163,34 +163,29 @@ def main(args):
     )
 
     # Setup model, optimizer and scheduler
-    net = SetVAE(
-        input_dim=3,
-        max_outputs=2500,
-        init_dim=32,
-        n_mixtures=4,
-        n_layers=7,
-        z_dim=16,
-        z_scales=[1, 1, 2, 4, 8, 16, 32],
-        hidden_dim=64,
-        num_heads=4,
-        slot_att=True,
-        isab_inds=16,
-        ln=True,
+    net_g = Generator()
+    net_d = Discriminator()
+    opt_g = torch.optim.Adam(net_g.parameters(), lr=4e-4, betas=(0.9, 0.999))
+    opt_d = torch.optim.Adam(net_d.parameters(), lr=2e-4, betas=(0.9, 0.999))
+    sch_g = torch.optim.lr_scheduler.LambdaLR(
+        opt_g, lr_lambda=lambda e: 1.0 - max(0, (e / args.max_epoch) - 0.5)
     )
-    opt = torch.optim.Adam(net.parameters(), lr=0.001, betas=(0.9, 0.999))
-    sch = torch.optim.lr_scheduler.LambdaLR(
-        opt, lr_lambda=lambda e: 1.0 - max(0, (e / args.max_epoch) - 0.5)
+    sch_d = torch.optim.lr_scheduler.LambdaLR(
+        opt_d, lr_lambda=lambda e: 1.0 - max(0, (e / args.max_epoch) - 0.5)
     )
 
     # Setup trainer
     trainer = Trainer(
-        net,
-        opt=opt,
-        sch=sch,
+        net_g=net_g,
+        net_d=net_d,
+        opt_g=opt_g,
+        opt_d=opt_d,
+        sch_g=sch_g,
+        sch_d=sch_d,
         device=args.device,
         batch_size=args.batch_size,
         max_epoch=args.max_epoch,
-        kl_warmup_epoch=args.kl_warmup_epoch,
+        repeat_d=args.repeat_d,
         log_every_n_step=args.log_every_n_step,
         val_every_n_epoch=args.val_every_n_epoch,
         ckpt_every_n_epoch=args.ckpt_every_n_epoch,
