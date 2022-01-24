@@ -1,0 +1,12 @@
+name: setvae
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.6
+  - cudatoolkit=10.2
+  - pytorch::pytorch=1.8.0
+  - plotly=5.5.0
+  - wandb
+  - gdown=3.8.3
+  - black
