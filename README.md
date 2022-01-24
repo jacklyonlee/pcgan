@@ -1,4 +1,4 @@
-# SetVAE
+# Point Cloud GAN
 This repository re-implements and reproduces the results of [Point Cloud GAN](https://github.com/chunliangli/Point-Cloud-GAN) (ICLR'19 Workshop).
 
 ## Installation
