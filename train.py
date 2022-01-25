@@ -70,11 +70,11 @@ def parse_args():
     parser.add_argument(
         "--te_sample_size",
         type=int,
-        default=512,
+        default=1024,
         help="Number of points sampled from each testing sample.",
     )
     parser.add_argument(
-        "--max_epoch", type=int, default=8000, help="Total training epoch."
+        "--max_epoch", type=int, default=2000, help="Total training epoch."
     )
     parser.add_argument(
         "--repeat_d",
@@ -97,7 +97,7 @@ def parse_args():
     parser.add_argument(
         "--ckpt_every_n_epoch",
         type=int,
-        default=200,
+        default=100,
         help="Checkpoint trainer at every N epoch.",
     )
     parser.add_argument(
@@ -165,14 +165,10 @@ def main(args):
     # Setup model, optimizer and scheduler
     net_g = Generator()
     net_d = Discriminator()
-    opt_g = torch.optim.Adam(net_g.parameters(), lr=4e-4, betas=(0.9, 0.999))
-    opt_d = torch.optim.Adam(net_d.parameters(), lr=2e-4, betas=(0.9, 0.999))
-    sch_g = torch.optim.lr_scheduler.LambdaLR(
-        opt_g, lr_lambda=lambda e: 1.0 - max(0, (e / args.max_epoch) - 0.5)
-    )
-    sch_d = torch.optim.lr_scheduler.LambdaLR(
-        opt_d, lr_lambda=lambda e: 1.0 - max(0, (e / args.max_epoch) - 0.5)
-    )
+    opt_g = torch.optim.Adam(net_g.parameters(), lr=2e-4, betas=(0.9, 0.999))
+    opt_d = torch.optim.Adam(net_d.parameters(), lr=1e-4, betas=(0.9, 0.999))
+    sch_g = torch.optim.lr_scheduler.LambdaLR(opt_g, lr_lambda=lambda e: 1.0)
+    sch_d = torch.optim.lr_scheduler.LambdaLR(opt_d, lr_lambda=lambda e: 1.0)
 
     # Setup trainer
     trainer = Trainer(

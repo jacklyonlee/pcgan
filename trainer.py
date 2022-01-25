@@ -8,18 +8,6 @@ from utils import plot_samples
 from metrics import compute_cd, compute_metrics
 
 
-def compute_loss_g(o, x, op, beta=20):
-    loss_op = op.mean()
-    loss_cd = compute_cd(o, x).mean()
-    return loss_op + beta * loss_cd
-
-
-def compute_loss_d(xp, op, rho=1e-6):
-    loss_gp = 1.0 - (((xp ** 2).mean(dim=1) + (op ** 2).mean(dim=1)) / 2.0)
-    loss_ws = xp.mean() - op.mean()
-    return loss_ws + 0.5 * rho * (loss_gp ** 2).mean()
-
-
 class Trainer:
     def __init__(
         self,
@@ -99,16 +87,22 @@ class Trainer:
             ckpt_path = os.path.join(self.ckpt_dir, ckpt_path)
         self._load_state_dict(torch.load(ckpt_path))
 
-    def _train_step_g(self, x, mu, std):
+    def _train_step_g(self, x, mu, std, beta=20):
         o, z1 = self.net_g(x)
         op = self.net_d(o, z1.detach())
-        return compute_loss_g(o, x, op)
+        loss_op = op.mean()
+        loss_cd = compute_cd(o, x).mean()
+        loss_g = loss_op + beta * loss_cd
+        return loss_g
 
-    def _train_step_d(self, x, mu, std):
+    def _train_step_d(self, x, mu, std, rho=1e-6):
         o, z1 = self.net_g(x)
         xp = self.net_d(x, z1.detach()).squeeze()
         op = self.net_d(o.detach(), z1.detach())
-        return compute_loss_d(xp, op)
+        loss_gp = 1.0 - 0.5 * ((xp ** 2).mean(dim=1) + (op ** 2).mean(dim=1))
+        loss_ws = xp.mean() - op.mean()
+        loss_d = loss_ws + 0.5 * rho * (loss_gp ** 2).mean()
+        return loss_d
 
     def train(self, train_loader, val_loader):
         while self.epoch < self.max_epoch:
