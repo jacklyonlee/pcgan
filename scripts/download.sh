@@ -11,7 +11,7 @@ rm data/data.zip
 # Download trained checkpoints
 mkdir checkpoints
 mkdir checkpoints/trained
-gdown --id 1-Z1U2_fuk_op3cjuWLO1kYABMXjvVmUT -O checkpoints/trained.zip
+gdown --id 1TEiYM2o2YG-MVAe0YQrAkdMYs6qRsZ4E -O checkpoints/trained.zip
 unzip checkpoints/trained.zip -d checkpoints/trained
 rm checkpoints/trained.zip
 
