@@ -64,7 +64,7 @@ class Trainer:
             "opt_d": self.opt_d,
             "sch_g": self.sch_g,
             "sch_d": self.sch_d,
-        }:
+        }.items():
             m and m.load_state_dict(state_dict[k])
         self.step, self.epoch, self.max_epoch = map(
             state_dict.get,
@@ -164,7 +164,6 @@ class Trainer:
     def test(self, test_loader):
         results = []
         self.net_g.eval()
-        self.net_d.eval()
         for batch in tqdm(test_loader):
             batch = [t.to(self.device) for t in batch]
             results.append(self._test_step(*batch))
