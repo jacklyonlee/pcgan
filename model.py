@@ -88,7 +88,7 @@ class Discriminator(nn.Module):
         super().__init__()
         self.fc = nn.Linear(z1_dim, h_dim)
         self.fu = nn.Linear(x_dim, h_dim, bias=False)
-        self.part1 = nn.Sequential(
+        self.d1 = nn.Sequential(
             nn.Softplus(),
             nn.Linear(h_dim, h_dim),
             nn.Softplus(),
@@ -96,7 +96,7 @@ class Discriminator(nn.Module):
         )
         self.sc = nn.Linear(z1_dim, h_dim)
         self.su = nn.Linear(h_dim - z1_dim, h_dim, bias=False)
-        self.part2 = nn.Sequential(
+        self.d2 = nn.Sequential(
             nn.Softplus(),
             nn.Linear(h_dim, h_dim),
             nn.Softplus(),
@@ -104,7 +104,7 @@ class Discriminator(nn.Module):
         )
         self.tc = nn.Linear(z1_dim, h_dim)
         self.tu = nn.Linear(h_dim - z1_dim, h_dim, bias=False)
-        self.part3 = nn.Sequential(
+        self.d3 = nn.Sequential(
             nn.Softplus(),
             nn.Linear(h_dim, h_dim),
             nn.Softplus(),
@@ -113,9 +113,9 @@ class Discriminator(nn.Module):
 
     def forward(self, x, z1):
         y = self.fc(z1) + self.fu(x)
-        o = self.part1(y)
-        y2 = self.sc(z1) + self.su(o)
-        o = self.part2(y2)
-        y3 = self.tc(z1) + self.tu(o)
-        o = self.part3(y3)
+        o = self.d1(y)
+        y = self.sc(z1) + self.su(o)
+        o = self.d2(y)
+        y = self.tc(z1) + self.tu(o)
+        o = self.d3(y)
         return o

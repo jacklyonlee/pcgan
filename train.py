@@ -165,8 +165,8 @@ def main(args):
     # Setup model, optimizer and scheduler
     net_g = Generator()
     net_d = Discriminator()
-    opt_g = torch.optim.Adam(net_g.parameters(), lr=2e-4, betas=(0.9, 0.999))
-    opt_d = torch.optim.Adam(net_d.parameters(), lr=1e-4, betas=(0.9, 0.999))
+    opt_g = torch.optim.Adam(net_g.parameters(), lr=4e-4, betas=(0.9, 0.999))
+    opt_d = torch.optim.Adam(net_d.parameters(), lr=2e-4, betas=(0.9, 0.999))
     sch_g = torch.optim.lr_scheduler.LambdaLR(opt_g, lr_lambda=lambda e: 1.0)
     sch_d = torch.optim.lr_scheduler.LambdaLR(opt_d, lr_lambda=lambda e: 1.0)
 
