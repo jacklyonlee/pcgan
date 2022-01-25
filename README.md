@@ -1,5 +1,5 @@
 # Point Cloud GAN
-This repository re-implements and reproduces the results of [Point Cloud GAN](https://github.com/chunliangli/Point-Cloud-GAN) (ICLR'19 Workshop).
+This repository implements and reproduces the results of [Point Cloud GAN](https://github.com/chunliangli/Point-Cloud-GAN) (ICLR'19 Workshop).
 
 ## Installation
 * Set up and activate conda environment.
