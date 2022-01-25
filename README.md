@@ -1,5 +1,5 @@
 # Point Cloud GAN
-This repository implements an improved version of [Point Cloud GAN](https://github.com/chunliangli/Point-Cloud-GAN) (ICLR'19 Workshop).
+This repository implements an improved version of [Point Cloud GAN](https://github.com/chunliangli/Point-Cloud-GAN) (ICLR'19 Workshop) which achieves performance comparable to the [current SOTA](https://github.com/jw9730/setvae) in point cloud generation.
 
 ## Installation
 * Set up and activate conda environment.
