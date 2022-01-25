@@ -44,8 +44,8 @@ sh scripts/test_shapenet_aiplane.sh
 ## Metrics
 Table below shows final metrics for SetVAE and our model (**MMD-CD** is scaled by 10<sup>3</sup> and **MMD-EMD**, **COV**, **1-NNA** by 10<sup>2</sup>). SetVAE is trained for 8000 epochs and our model is trained for 2000 epochs.
 
-| Category  | Model | MMD(↓) CD | MMD(↓) EMD | COV(↑) CD | COV(↑) EMD |
-| :---: | :---: | :---: | :---: | :---: | :---: | 
-| Airplane | SetVAE | 0.199 | 3.07 | 43.45 | 44.93 |
-|  | Ours     | 0.224 | 3.45 | 38.27 | 36.79 |
+| Category  | Model | MMD(↓) CD | MMD(↓) EMD | COV(↑) CD | COV(↑) EMD | 1-NNA(↓) CD | 1-NNA(↓) EMD |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | 
+| Airplane | SetVAE | 0.199 | 3.07 | 43.45 | 44.93 | 75.31 | 77.65 |
+|  | Ours     | 0.224 | 3.45 | 38.27 | 36.79 | - | - |
 
