@@ -6,4 +6,4 @@ python train.py \
   --te_sample_size 1024 \
   --max_epoch 2000 \
   --repeat_d 5 \
-  --seed 42
+  --seed 420

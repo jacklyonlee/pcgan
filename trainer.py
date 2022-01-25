@@ -87,21 +87,18 @@ class Trainer:
             ckpt_path = os.path.join(self.ckpt_dir, ckpt_path)
         self._load_state_dict(torch.load(ckpt_path))
 
-    def _train_step_g(self, x, mu, std, beta=20):
+    def _train_step_g(self, x, mu, std):
         o, z1 = self.net_g(x)
         op = self.net_d(o, z1.detach())
-        loss_op = op.mean()
-        loss_cd = compute_cd(o, x).mean()
-        loss_g = loss_op + beta * loss_cd
-        return loss_g
+        loss_op = -op.mean()
+        loss_cd = compute_cd(o, x, reduce_func=torch.sum).mean()
+        return loss_op + loss_cd
 
-    def _train_step_d(self, x, mu, std, rho=1e-6):
+    def _train_step_d(self, x, mu, std):
         o, z1 = self.net_g(x)
-        xp = self.net_d(x, z1.detach()).squeeze()
+        xp = self.net_d(x, z1.detach())
         op = self.net_d(o.detach(), z1.detach())
-        loss_gp = 1.0 - 0.5 * ((xp ** 2).mean(dim=1) + (op ** 2).mean(dim=1))
-        loss_ws = xp.mean() - op.mean()
-        loss_d = loss_ws + 0.5 * rho * (loss_gp ** 2).mean()
+        loss_d = F.relu(1. - xp).mean() + F.relu(1. + op).mean()
         return loss_d
 
     def train(self, train_loader, val_loader):
