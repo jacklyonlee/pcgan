@@ -36,7 +36,7 @@ You can evaluate checkpointed models using `test.py` or provided scripts.
 
 ```shell
 # Test user specified checkpoint using CLI
-python test.py --ckpt_path CKPT_PATH --cate car
+python test.py --ckpt_path CKPT_PATH --cate airplane
 # Test provided checkpoints
 sh scripts/test_shapenet_aiplane.sh
 ```
