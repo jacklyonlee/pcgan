@@ -28,7 +28,7 @@ You can train using `train.py` or provided scripts.
 # Train using CLI
 python train.py --name NAME --cate airplane
 # Train using provided settings
-sh scripts/train_shapenet_aiplane.sh
+sh scripts/train_shapenet_airplane.sh
 ```
 
 ## Testing
@@ -38,7 +38,7 @@ You can evaluate checkpointed models using `test.py` or provided scripts.
 # Test user specified checkpoint using CLI
 python test.py --ckpt_path CKPT_PATH --cate airplane
 # Test provided checkpoints
-sh scripts/test_shapenet_aiplane.sh
+sh scripts/test_shapenet_airplane.sh
 ```
 
 ## Metrics
