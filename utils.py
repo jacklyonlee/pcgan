@@ -1,9 +1,10 @@
 import torch
 import plotly as plt
+from plotly.subplots import make_subplots
 
 
 def plot_samples(samples, num=8, rows=2, cols=4):
-    fig = plt.subplots.make_subplots(
+    fig = make_subplots(
         rows=rows,
         cols=cols,
         specs=[[{"type": "Scatter3d"} for _ in range(cols)] for _ in range(rows)],
